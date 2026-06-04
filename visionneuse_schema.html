@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Schéma Gare 331 - Maintenance</title>
+    <style>
+        :root {
+            --bleu-principal: #1C2F50;
+            --bleu-fonce: #14294C;
+            --blanc: #FFFFFF;
+            --gris-clair: #AAB2BB;
+            --jaune-alerte: #FFD700;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; padding: 0; 
+            background-color: #f0f2f5;
+            display: flex; flex-direction: column; 
+            height: 100vh; overflow: hidden;
+        }
+
+        /* --- BARRE DE NAVIGATION (HEADER) --- */
+        .header { 
+            background-color: var(--bleu-principal); 
+            color: var(--blanc); 
+            padding: 10px 15px; 
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .btn-back { color: white; text-decoration: none; font-size: 20px; margin-right: 15px; font-weight: bold; }
+        
+        .title-box { display: flex; flex-direction: column; }
+        .title-main { font-size: 0.85rem; font-weight: bold; letter-spacing: 0.5px; }
+        
+        /* Badge de sélection (BRCL, BRAE, BRFU) */
+        #selection-badge { 
+            background: var(--jaune-alerte); 
+            color: black; 
+            font-size: 0.75rem; 
+            padding: 2px 8px; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            margin-top: 3px;
+            display: none; /* Caché par défaut */
+            animation: fadeIn 0.3s;
+        }
+
+        /* Menu 3 points (WhatsApp Style) */
+        .menu-container { position: relative; }
+        .menu-dots { font-size: 24px; cursor: pointer; padding: 5px; }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute; right: 0; top: 40px;
+            background: white; border-radius: 8px;
+            width: 210px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 2000; overflow: hidden;
+        }
+        .dropdown-menu.show { display: block; }
+        .menu-item {
+            padding: 12px 20px; font-size: 0.9rem; color: #333;
+            text-decoration: none; display: block; border-bottom: 1px solid #eee;
+        }
+        .menu-item:hover { background: #f5f5f5; }
+
+        /* --- ZONE DU SCHÉMA (PNG) --- */
+        .schema-container {
+            flex-grow: 1;
+            overflow: auto; /* Permet de défiler sur l'image */
+            display: flex; justify-content: center; align-items: flex-start;
+            background-color: #ddd;
+            padding: 5px;
+        }
+        .schema-img {
+            max-width: 100%; /* S'adapte au départ, mais peut être zoomé par le navigateur */
+            height: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* --- ZONE COMMENTAIRE (FOOTER) --- */
+        .footer-comment {
+            background: white;
+            padding: 12px 15px;
+            border-top: 3px solid var(--bleu-principal);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        .footer-comment label {
+            display: block; font-size: 0.8rem; font-weight: bold;
+            color: var(--bleu-principal); margin-bottom: 8px;
+        }
+        .comment-area {
+            width: 100%; height: 70px;
+            border: 1px solid var(--gris-clair); border-radius: 8px;
+            padding: 10px; font-size: 0.9rem; font-family: inherit;
+            box-sizing: border-box; resize: none; background: #fafafa;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- ENTÊTE -->
+    <div class="header">
+        <div class="header-left">
+            <a href="index.html" class="btn-back">←</a>
+            <div class="title-box">
+                <div class="title-main">GARE 331 - VOIE 01</div>
+                <div id="selection-badge">MODE : BRCL</div>
+            </div>
+        </div>
+        
+        <div class="menu-container">
+            <div class="menu-dots" onclick="toggleMenu()">⋮</div>
+            <div class="dropdown-menu" id="myDropdown">
+                <a href="#" class="menu-item" onclick="updateMode('BRCL')">1. Mise à jour dans BRCL</a>
+                <a href="#" class="menu-item" onclick="updateMode('BRAE')">2. Mise à jour dans BRAE</a>
+                <a href="#" class="menu-item" onclick="updateMode('BRFU')">3. Mise à jour dans BRFU</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ZONE D'AFFICHAGE DU SCHÉMA -->
+    <div class="schema-container">
+        <!-- Votre fichier doit s'appeler exactement : schema_electrique.png -->
+        <img src="schema_electrique.png" alt="Schéma Électrique" class="schema-img">
+    </div>
+
+    <!-- ZONE COMMENTAIRE -->
+    <div class="footer-comment">
+        <label>📝 COMMENTAIRE DE Mr ABDELALI ADRIOUCH :</label>
+        <textarea class="comment-area" placeholder="Notez ici les modifications effectuées..."></textarea>
+    </div>
+
+    <script>
+        // Affichage du menu
+        function toggleMenu() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Changement de mode (BRCL, BRAE, BRFU)
+        function updateMode(mode) {
+            const badge = document.getElementById("selection-badge");
+            badge.innerText = "MODE : " + mode;
+            badge.style.display = "inline-block";
+            toggleMenu(); // Ferme le menu après sélection
+        }
+
+        // Fermer le menu si on clique ailleurs
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-dots')) {
+                var dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
